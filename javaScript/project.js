@@ -6,6 +6,8 @@ const app = new PIXI.Application({
 
 document.body.appendChild(app.view);
 
+const SCALE = 1;
+
 // Adds an image assigned to a variable. 
 app.loader.add('test', 'images/cat.png')
 app.loader.add('test2', 'images/dog.png')
@@ -17,10 +19,10 @@ app.loader.load((loader, resources) => {
     const cat = new PIXI.Sprite(resources.test.texture);
     const dog = new PIXI.Sprite(resources.test2.texture);
     
-    dog.x = app.renderer.width / 2
-    dog.y = app.renderer.height / 2
-    dog.scale.x = 1 / 3
-    dog.scale.y = 1 / 3
+    dog.x = (cat.x + 50) * 4.5
+    dog.y = 0
+    dog.scale.x = SCALE / 3
+    dog.scale.y = SCALE / 3
 
     app.stage.addChild(cat)
 
