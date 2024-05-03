@@ -18,32 +18,106 @@ app.loader.add('test2', 'images/dog.png')
 // Write anything PIXI in here: 
 app.loader.load((loader, resources) => {
     
-    const cat = new PIXI.Sprite(resources.test.texture);
-    const dog = new PIXI.Sprite(resources.test2.texture);
+    // Variables
+    let play = new PIXI.Text("Play", {fontFamily: 'Brush Script MT', fontSize: 100})
+    let inventory_screen = new PIXI.Text("Inventory", {fontFamily: 'Brush Script MT', fontSize: 100})
+    let display = new PIXI.Text("Something went wrong", {fontFamily: 'Brush Script MT', fontSize: 100})
+    let back = new PIXI.Text("X", {fontFamily: 'Arial', fontSize: 100})
+    let X = window.innerWidth / 2;
+    let Y = (window.innerHeight / 2) - 200;
+    let inventory = ''
+    let check = 0
     
-    const cheese = new PIXI.Text('HELLO!', {fontFamily: 'Times New Roman'} )
 
-    dog.x = (cat.x + 50) * 4.5
-    dog.y = 0
-    dog.scale.x = SCALE / 3
-    dog.scale.y = SCALE / 3
+    // Sets the position of play to the center of the screen
+    play.x = X
+    play.y = Y
+    play.anchor.set(0.5)
 
-    cheese.x = (cat.x + 100) * 4.5
-    cheese.scale.x = SCALE 
-    cheese.scale.y = SCALE
+    display.x = X
+    display.y = Y
+    display.anchor.set(0.5)
 
-    app.stage.addChild(cat);
-    app.stage.addChild(dog);
-    app.stage.addChild(cheese)
+    inventory_screen.x = X
+    inventory_screen.y = Y
+    inventory_screen.anchor.set(0.5)
 
+    back.x = X
+    back.y = Y
+    back.anchor.set(0.5)
 
+    // Makes play interactive
+    play.interactive = true;
+    play.buttonMode = true;
+    play.on("pointerdown", doPointerDown);
 
+    inventory_screen.interactive = true;
+    inventory_screen.buttonMode = true;
+    inventory_screen.on("pointerdown", doPointerDown1);
+
+    back.interactive = true;
+    back.buttonMode = true;
+    back.on("pointerdown", doPointerDown2);
+
+    // Creates a rectangle/container for other variables
+    const big = new PIXI.Graphics();
+
+    // Rectangle is the entire size of the screen
+    big.beginFill(0x1099bb);
+    big.drawRect(0, 0, window.innerWidth, window.innerHeight);
+    // Adds play into big
+    big.addChild(play)
+
+    // Adds the rectangle to the screen and others children assigned to it
+    app.stage.addChild(big);
+
+    // On click, removes sprite
+    function doPointerDown() {
+        if (play.text === "Play") {
+            big.removeChild(play)
+            big.addChild(inventory_screen)
+        } 
+    }
+
+    function doPointerDown1() {
+        big.removeChild(inventory_screen)
+        big.addChild(display)
+        big.addChild(back)
+    }
+
+    function doPointerDown2() {
+        big.removeChild(display)
+        big.removeChild(back)
+        big.addChild(inventory_screen)
+    }
+
+    // Calls code inside here every millisecond
     app.ticker.add((time) => {
-        if (test < 10) {
-            test += 1;
-            console.log(test)
+
+        // Centers text to the center of the window
+        play.x = X
+        play.y = Y
+        play.anchor.set(0.5)
+
+        display.x = X
+        display.y = Y
+        display.anchor.set(0.5)
+
+        inventory_screen.x = X
+        inventory_screen.y = Y
+        inventory_screen.anchor.set(0.5)
+
+        if (display) {
+            back.x = 0
+            back.y = 0
+            back.anchor.set(0.5)
         }
 
+        if (inventory === '' && check === 0) {
+          display.text = "You have nothing" 
+        } else if (check === 0) {
+            display.text = "You have something"
+        }
     })
 })
 
