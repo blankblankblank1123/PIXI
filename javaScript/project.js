@@ -26,11 +26,13 @@ app.view.setAttribute('tabindex', 0);
 
 // Loads images
 app.loader.add('wall', 'images/wall.png')
+app.loader.add('stand', 'images/stand.png')
 
 // Variables
 let play = 0
 let fade = 0
 let checkFade = 0
+let check = 0
 document.body.appendChild(app.view);
 
 // This is a function that takes and names a varible and an image.
@@ -47,11 +49,21 @@ app.loader.load((loader, resources) => {
     big.scale.x = 100
     big.scale.y = 100
 
+    const bar = new PIXI.Sprite(resources.stand.texture)
+    bar.scale.x = 6
+    bar.scale.y = 6
+
     const title = new PIXI.Text("Play", {fontFamily: 'PixeloidSans', fill: '0xFFFFFF', fontSize: 100})
+    const left = new PIXI.Text("Left", {fontFamily: 'PixeloidSans', fill: '0xFFFFFF', fontSize: 100})
+    const right = new PIXI.Text("Right", {fontFamily: 'PixeloidSans', fill: '0xFFFFFF', fontSize: 100})
+
 
     title.interactive = true;
     title.buttonMode = true;
     title.on("pointerdown", doPointerDown);
+
+    app.stage.interactive = true;
+    app.stage.on("pointermove", move) 
 
     // Rectangle is the entire size of the screen
     const screen = new PIXI.Graphics();
@@ -76,14 +88,25 @@ app.loader.load((loader, resources) => {
         play += 1
     }
 
-    // Calls code inside here every millisecond
-    app.ticker.add((time) => {
+    function fade_out(number) {
+        if (number === 1) {
+            fade += .004
 
-        title.x = window.innerWidth / 2
-        title.y = window.innerHeight / 2
-        title.anchor.set(0.5)
+            if (fade === checkFade + .004) {
+                checkFade += .004
+                black_screen.alpha -= .004
+            }
 
-        if (play === 1) {
+            if (fade >= 1) {
+                checkFade = 0
+                play = 3
+                fade = 0
+            }
+        }
+    }
+
+    function fade_in(number) {
+        if (number === 1) {
             fade += .01
             if (fade === checkFade + .01) {
                 checkFade += .01
@@ -97,19 +120,44 @@ app.loader.load((loader, resources) => {
                 fade = 0
             }
         }
+    }
 
-        if (play == 2) {
-            fade += .004
+    function move(e) {
+        let pos = e.data.global
+        
+        check = pos.x
+    }
 
-            if (fade === checkFade + .004) {
-                checkFade += .004
-                black_screen.alpha -= .004
-            }
+    // Calls code inside here every millisecond
+    app.ticker.add((time) => {
 
-            if (fade >= 1) {
-                checkFade = 0
-                play = 0
-                fade = 0
+        
+
+        title.x = window.innerWidth / 2
+        title.y = window.innerHeight / 2
+        title.anchor.set(0.5)
+
+        bar.x = window.innerWidth / 2
+        bar.y = window.innerHeight / 2
+        bar.anchor.set(0.5)
+
+        if (play === 1) {
+            fade_in(1)
+        }
+
+        if (play === 2) {
+            screen.addChild(bar)
+            fade_out(1)
+        }
+
+        if (play === 3) {
+            if (check <= 300) {
+                screen.addChild(left)
+            } else if (check >= 1100) {
+                screen.addChild(right)
+            } else {
+                screen.removeChild(left)
+                screen.removeChild(right)
             }
         }
 
