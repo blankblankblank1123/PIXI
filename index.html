@@ -6,17 +6,34 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>MME Project Game</title>
     <style>
+        /* Font! */
+        @font-face { font-family: PixeloidSans; src: url('PixeloidSansBold-PKnYd.ttf'); } 
+
+        h1 {
+            font-family: PixeloidSans;
+        }
+
         /* Code from github by eXponenta inside of pixi-starfighter https://github.com/ivanpopelyshev/pixi-starfighter/blob/master/css/index.css. */
         html, body {
             margin: 0;
             padding: 0;
             overflow: hidden;
         }   
-
     </style>
     <!-- PIXI.JS Links -->
     <script src="https://cdn.jsdelivr.net/npm/pixi.js@7.x/dist/pixi.min.js"></script>
     <script type="text/javascript" src="javaScript/pixi.min.js"></script>
+    <script>
+        WebFont.load({
+        google: {
+            families: ['Press Start 2P']
+        },
+        active:e=>{
+            console.log("font loaded!");
+            // now start setting up your PixiJS (or canvas) stuff!
+            }
+        });
+    </script>
     </head>
     <body>
         <script src="javaScript/project.js"></script>
