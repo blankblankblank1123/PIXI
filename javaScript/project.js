@@ -31,7 +31,6 @@ app.loader.add('wall', 'images/wall.png')
 let play = 0
 let fade = 0
 let checkFade = 0
-
 document.body.appendChild(app.view);
 
 // This is a function that takes and names a varible and an image.
@@ -54,14 +53,24 @@ app.loader.load((loader, resources) => {
     title.buttonMode = true;
     title.on("pointerdown", doPointerDown);
 
+    // Rectangle is the entire size of the screen
     const screen = new PIXI.Graphics();
 
-    // Rectangle is the entire size of the screen
     screen.drawRect(0, 0, window.innerWidth, window.innerHeight);
     screen.addChild(title)
 
+    const black_screen = new PIXI.Graphics();
+
+    black_screen.beginFill(0x000000)
+    black_screen.drawRect(0, 0, window.innerWidth, window.innerHeight);
+    black_screen.alpha = 0
+
+    black_screen.scale.x = 100
+    black_screen.scale.y = 100
+
     // Adds the rectangle to the screen and others children assigned to it
     app.stage.addChild(screen);
+    app.stage.addChild(black_screen)
 
     function doPointerDown() {
         play += 1
@@ -69,7 +78,7 @@ app.loader.load((loader, resources) => {
 
     // Calls code inside here every millisecond
     app.ticker.add((time) => {
-        
+
         title.x = window.innerWidth / 2
         title.y = window.innerHeight / 2
         title.anchor.set(0.5)
@@ -78,11 +87,26 @@ app.loader.load((loader, resources) => {
             fade += .01
             if (fade === checkFade + .01) {
                 checkFade += .01
-                title.alpha -= .01
+                black_screen.alpha += .01
             }
 
             if (fade >= 1) {
                 screen.removeChild(title)
+                checkFade = 0
+                play = 2
+                fade = 0
+            }
+        }
+
+        if (play == 2) {
+            fade += .004
+
+            if (fade === checkFade + .004) {
+                checkFade += .004
+                black_screen.alpha -= .004
+            }
+
+            if (fade >= 1) {
                 checkFade = 0
                 play = 0
                 fade = 0
