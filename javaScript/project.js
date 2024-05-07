@@ -30,6 +30,7 @@ app.loader.add('wall', 'images/wall.png')
 app.loader.add('stand', 'images/stand.png')
 app.loader.add('drawer', 'images/drawer.png')
 app.loader.add('beans', 'images/coffee_grounds.png')
+app.loader.add('leaves', 'images/tea_grounds.png')
 
 // Variables
 let play = 0
@@ -74,8 +75,18 @@ app.loader.load((loader, resources) => {
     coffee_beans.on("pointerover", doBeanText);
     coffee_beans.on("pointerout", removeBeanText)
 
+    const tea_leaves = new PIXI.Sprite(resources.leaves.texture)
+    tea_leaves.scale.x = 2
+    tea_leaves.scale.y = 2
+
+    tea_leaves.interactive = true;
+    tea_leaves.buttonMode = true;
+    tea_leaves.on("pointerover", doTeaText);
+    tea_leaves.on("pointerout", removeTeaText)
+
     const title = new PIXI.Text("Play", {fontFamily: 'PixeloidSans', fill: '0xFFFFFF', fontSize: 100})
     const beanFlavoredText = new PIXI.Text("Coffee Grounds", {fontFamily: 'PixeloidSans', fill: '0xFFFFFF', fontSize: 50})
+    const teaFlavoredText = new PIXI.Text("Tea Leaves", {fontFamily: 'PixeloidSans', fill: '0xFFFFFF', fontSize: 50})
 
     title.interactive = true;
     title.buttonMode = true;
@@ -155,6 +166,14 @@ app.loader.load((loader, resources) => {
         screen.removeChild(beanFlavoredText)
     }
 
+    function doTeaText() {
+        screen.addChild(teaFlavoredText)
+    }
+
+    function removeTeaText() {
+        screen.removeChild(teaFlavoredText)
+    }
+
     // Calls code inside here every millisecond
     app.ticker.add((time) => {
 
@@ -199,10 +218,27 @@ app.loader.load((loader, resources) => {
 
         if (ingredients === 1) {
             screen.addChild(coffee_beans)
+            
+            coffee_beans.x = 100
+            coffee_beans.y = 65
+            coffee_beans.anchor.set(0.5)
+        
             beanFlavoredText.x = window.innerWidth / 2
-            beanFlavoredText.anchor.set(0.5)    
+            beanFlavoredText.y = 75
+            beanFlavoredText.anchor.set(0.5)
+            
+            screen.addChild(tea_leaves)
+
+            tea_leaves.x = 225
+            tea_leaves.y = 65
+            tea_leaves.anchor.set(0.5)
+
+            teaFlavoredText.x = window.innerWidth / 2
+            teaFlavoredText.y = 75
+            teaFlavoredText.anchor.set(0.5)  
         } else {
             screen.removeChild(coffee_beans)
+            screen.removeChild(tea_leaves)
         }
 
         // width.text = window.innerWidth
