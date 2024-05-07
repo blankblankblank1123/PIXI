@@ -1,7 +1,8 @@
 const app = new PIXI.Application({
     // When changing background color: change "#" -> "0x" and include no quotation marks.
     backgroundColor: 0x1099bb,
-    resizeTo: window,
+    width: 1366,
+    height: 768
 })
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
@@ -28,12 +29,14 @@ app.view.setAttribute('tabindex', 0);
 app.loader.add('wall', 'images/wall.png')
 app.loader.add('stand', 'images/stand.png')
 app.loader.add('drawer', 'images/drawer.png')
+app.loader.add('beans', 'images/coffee_grounds.png')
 
 // Variables
 let play = 0
 let fade = 0
 let checkFade = 0
 let check = 0
+let ingredients = 0
 document.body.appendChild(app.view);
 
 // This is a function that takes and names a varible and an image.
@@ -62,7 +65,17 @@ app.loader.load((loader, resources) => {
     right.scale.x = 6
     right.scale.y = 6
 
+    const coffee_beans = new PIXI.Sprite(resources.beans.texture)
+    coffee_beans.scale.x = 2
+    coffee_beans.scale.y = 2
+
+    coffee_beans.interactive = true;
+    coffee_beans.buttonMode = true;
+    coffee_beans.on("pointerover", doBeanText);
+    coffee_beans.on("pointerout", removeBeanText)
+
     const title = new PIXI.Text("Play", {fontFamily: 'PixeloidSans', fill: '0xFFFFFF', fontSize: 100})
+    const beanFlavoredText = new PIXI.Text("Coffee Grounds", {fontFamily: 'PixeloidSans', fill: '0xFFFFFF', fontSize: 50})
 
     title.interactive = true;
     title.buttonMode = true;
@@ -134,6 +147,14 @@ app.loader.load((loader, resources) => {
         check = pos.x
     }
 
+    function doBeanText() {
+        screen.addChild(beanFlavoredText)
+    }
+
+    function removeBeanText() {
+        screen.removeChild(beanFlavoredText)
+    }
+
     // Calls code inside here every millisecond
     app.ticker.add((time) => {
 
@@ -157,18 +178,31 @@ app.loader.load((loader, resources) => {
         if (play === 3) {
             if (check <= 300) {
                 screen.addChild(left)
-                left.x = 0
+                left.x = 165
                 left.y = window.innerHeight / 2
                 left.anchor.set(0.5)
-            } else if (check >= 1100) {
+                ingredients = 1
+
+            } else if (check >= 1066) {
                 screen.addChild(right)
-                right.x = window.innerWidth / 2
+                right.x = 1201 
                 right.y = window.innerHeight / 2
                 right.anchor.set(0.5)
+
+                ingredients = 0
             } else {
                 screen.removeChild(left)
                 screen.removeChild(right)
+                ingredients = 0
             }
+        }
+
+        if (ingredients === 1) {
+            screen.addChild(coffee_beans)
+            beanFlavoredText.x = window.innerWidth / 2
+            beanFlavoredText.anchor.set(0.5)    
+        } else {
+            screen.removeChild(coffee_beans)
         }
 
         // width.text = window.innerWidth
