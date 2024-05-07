@@ -27,6 +27,7 @@ app.view.setAttribute('tabindex', 0);
 // Loads images
 app.loader.add('wall', 'images/wall.png')
 app.loader.add('stand', 'images/stand.png')
+app.loader.add('drawer', 'images/drawer.png')
 
 // Variables
 let play = 0
@@ -53,10 +54,15 @@ app.loader.load((loader, resources) => {
     bar.scale.x = 6
     bar.scale.y = 6
 
-    const title = new PIXI.Text("Play", {fontFamily: 'PixeloidSans', fill: '0xFFFFFF', fontSize: 100})
-    const left = new PIXI.Text("Left", {fontFamily: 'PixeloidSans', fill: '0xFFFFFF', fontSize: 100})
-    const right = new PIXI.Text("Right", {fontFamily: 'PixeloidSans', fill: '0xFFFFFF', fontSize: 100})
+    const left = new PIXI.Sprite(resources.drawer.texture)
+    left.scale.x = 6
+    left.scale.y = 6
 
+    const right = new PIXI.Sprite(resources.drawer.texture)
+    right.scale.x = 6
+    right.scale.y = 6
+
+    const title = new PIXI.Text("Play", {fontFamily: 'PixeloidSans', fill: '0xFFFFFF', fontSize: 100})
 
     title.interactive = true;
     title.buttonMode = true;
@@ -131,8 +137,6 @@ app.loader.load((loader, resources) => {
     // Calls code inside here every millisecond
     app.ticker.add((time) => {
 
-        
-
         title.x = window.innerWidth / 2
         title.y = window.innerHeight / 2
         title.anchor.set(0.5)
@@ -153,8 +157,14 @@ app.loader.load((loader, resources) => {
         if (play === 3) {
             if (check <= 300) {
                 screen.addChild(left)
+                left.x = 0
+                left.y = window.innerHeight / 2
+                left.anchor.set(0.5)
             } else if (check >= 1100) {
                 screen.addChild(right)
+                right.x = window.innerWidth / 2
+                right.y = window.innerHeight / 2
+                right.anchor.set(0.5)
             } else {
                 screen.removeChild(left)
                 screen.removeChild(right)
